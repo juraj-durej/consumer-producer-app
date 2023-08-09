@@ -5,8 +5,12 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HibernateUtils {
+
+  private static final Logger log = LoggerFactory.getLogger(HibernateUtils.class);
   private static StandardServiceRegistry registry;
   private static SessionFactory sessionFactory;
 
@@ -20,18 +24,14 @@ public class HibernateUtils {
         sessionFactory = metadata.getSessionFactoryBuilder().build();
 
       } catch (Exception e) {
-        e.printStackTrace();
-        if (registry != null) {
-          StandardServiceRegistryBuilder.destroy(registry);
-        }
+        log.error(e.getMessage());
+        StandardServiceRegistryBuilder.destroy(registry);
       }
     }
     return sessionFactory;
   }
 
   public static void shutdown() {
-    if (registry != null) {
-      StandardServiceRegistryBuilder.destroy(registry);
-    }
+    StandardServiceRegistryBuilder.destroy(registry);
   }
 }

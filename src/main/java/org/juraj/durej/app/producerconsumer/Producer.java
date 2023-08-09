@@ -6,8 +6,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.juraj.durej.app.commands.Command;
 import org.juraj.durej.app.commands.CommandType;
 import org.juraj.durej.app.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Producer implements Runnable {
+  private static final Logger log = LoggerFactory.getLogger(Producer.class);
   private BlockingQueue<Command> queue;
   private AtomicBoolean isRunning;
   private AtomicInteger commandCount;
@@ -38,6 +41,7 @@ public class Producer implements Runnable {
       isRunning.set(false);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
+      log.error(e.getMessage());
     }
   }
 }

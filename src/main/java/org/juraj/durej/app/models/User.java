@@ -36,4 +36,8 @@ public class User {
         ", userName='" + userName + '\'' +
         '}';
   }
+
+  public String getUserName() {
+    return userName;
+  }
 }

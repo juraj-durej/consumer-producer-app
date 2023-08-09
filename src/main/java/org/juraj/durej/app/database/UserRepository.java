@@ -6,14 +6,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.juraj.durej.app.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserRepository {
 
+  private static final Logger log = LoggerFactory.getLogger(UserRepository.class);
   Transaction transaction = null;
-//  je tento lock potrebny ? Budem/Nebudem blokovat databazu?
   private Lock lock = new ReentrantLock();
 
-  public void addUser(User user){
+  public void addUser(User user) {
     try (Session session = HibernateUtils.getSessionFactory().openSession()) {
       lock.lock();
       transaction = session.beginTransaction();
@@ -24,7 +26,7 @@ public class UserRepository {
       if (transaction != null) {
         transaction.rollback();
       }
-      e.printStackTrace();
+      log.error(e.getMessage());
     } finally {
       lock.unlock();
     }
@@ -39,12 +41,12 @@ public class UserRepository {
       if (transaction != null) {
         transaction.rollback();
       }
-      e.printStackTrace();
+      log.error(e.getMessage());
     }
     return List.of();
   }
 
-  public void deleteAllUsers(){
+  public void deleteAllUsers() {
     try (Session session = HibernateUtils.getSessionFactory().openSession()) {
       transaction = session.beginTransaction();
       lock.lock();
@@ -56,7 +58,7 @@ public class UserRepository {
       if (transaction != null) {
         transaction.rollback();
       }
-      e.printStackTrace();
+      log.error(e.getMessage());
     } finally {
       lock.unlock();
     }
