@@ -2,8 +2,6 @@ package org.juraj.durej.app.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -37,31 +35,5 @@ public class User {
         ", userGuid='" + userGuid + '\'' +
         ", userName='" + userName + '\'' +
         '}';
-  }
-
-  // Getters and setters
-
-  public long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(long userId) {
-    this.userId = userId;
-  }
-
-  public String getUserGuid() {
-    return userGuid;
-  }
-
-  public void setUserGuid(String userGuid) {
-    this.userGuid = userGuid;
-  }
-
-  public String getUserName() {
-    return userName;
-  }
-
-  public void setUserName(String userName) {
-    this.userName = userName;
   }
 }

@@ -18,27 +18,23 @@ public class Producer implements Runnable {
     this.commandCount = commandCount;
   }
 
+  void publishCommand(CommandType commandType, User user) throws InterruptedException{
+    queue.put(new Command(commandType, user));
+    commandCount.getAndAdd(1);
+  }
+
   @Override
   public void run() {
     try {
       User user1 = new User(1, "a1", "Robert");
       User user2 = new User(2, "a2", "Martin");
 
-      queue.put(new Command(CommandType.ADD, user1));
-      queue.put(new Command(CommandType.ADD, user2));
+      publishCommand(CommandType.ADD, user1);
+      publishCommand(CommandType.ADD, user2);
+      publishCommand(CommandType.PRINT_ALL, null);
+      publishCommand(CommandType.DELETE_ALL, null);
+      publishCommand(CommandType.PRINT_ALL, null);
 
-      commandCount.getAndAdd(2);
-
-      queue.put(new Command(CommandType.PRINT_ALL, null));
-      commandCount.getAndAdd(1);
-
-      queue.put(new Command(CommandType.DELETE_ALL, null));
-      commandCount.getAndAdd(1);
-
-      queue.put(new Command(CommandType.PRINT_ALL, null));
-      commandCount.getAndAdd(1);
-
-      // Signal the end of commands
       isRunning.set(false);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();

@@ -19,19 +19,22 @@ public class Consumer implements Runnable {
     this.commandCount = commandCount;
   }
 
+  void processCommand(Command command){
+    switch (command.getType()) {
+      case ADD -> userRepository.addUser(command.getUser());
+      case PRINT_ALL -> System.out.println(userRepository.getUsers());
+      case DELETE_ALL -> userRepository.deleteAllUsers();
+    }
+    commandCount.decrementAndGet();
+  }
+
   @Override
   public void run() {
     while (isRunning.get() || commandCount.get() > 0) {
       try {
-        Command command = queue.take();
 
-        switch (command.getType()) {
-          case ADD -> userRepository.addUser(command.getUser());
-          case PRINT_ALL -> System.out.println(userRepository.getUsers());
-          case DELETE_ALL -> userRepository.deleteAllUsers();
-        }
+        processCommand(queue.take());
 
-        commandCount.decrementAndGet();
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
