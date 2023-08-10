@@ -1,19 +1,15 @@
 package org.juraj.durej.app.producerconsumer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.hibernate.annotations.SQLDelete;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.juraj.durej.app.commands.Command;
 import org.juraj.durej.app.commands.CommandType;
-import org.juraj.durej.app.database.UserRepository;
 import org.juraj.durej.app.models.User;
 
 class ProducerTest {
@@ -21,7 +17,6 @@ class ProducerTest {
   BlockingQueue<Command> queue;
   AtomicBoolean isRunning;
   AtomicInteger commandCount;
-  UserRepository userRepository = new UserRepository();
 
   @BeforeEach
   void setUp() {
@@ -30,28 +25,29 @@ class ProducerTest {
     commandCount = new AtomicInteger(0);
   }
 
-  @AfterEach
-  void afterEach(){
-    userRepository.deleteAllUsers();
-  }
-
   @Test
   void publishCommandShouldPublishCommandIntoQueueSuccessfully() throws InterruptedException {
-
+    // given
     Producer producer = new Producer(queue, isRunning, commandCount);
+
+    // when
     producer.publishCommand(CommandType.PRINT_ALL, null);
 
+    // then
     assertEquals(1, queue.size());
     assertEquals(1, commandCount.get());
   }
 
   @Test
   void publishCommandShouldPublishCommandAddIntoQueueSuccessfully() throws InterruptedException {
-
+    // given
     Producer producer = new Producer(queue, isRunning, commandCount);
     User user = new User(1, "a1", "Robert");
+
+    // when
     producer.publishCommand(CommandType.ADD, user);
 
+    // then
     assertEquals(1, queue.size());
     assertEquals(1, commandCount.get());
   }

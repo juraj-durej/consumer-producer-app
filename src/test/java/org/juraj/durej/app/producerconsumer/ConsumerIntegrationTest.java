@@ -15,7 +15,8 @@ import org.juraj.durej.app.commands.CommandType;
 import org.juraj.durej.app.database.UserRepository;
 import org.juraj.durej.app.models.User;
 
-class ConsumerTest {
+class ConsumerIntegrationTest {
+
   BlockingQueue<Command> queue;
   AtomicBoolean isRunning;
   AtomicInteger commandCount;
@@ -30,15 +31,18 @@ class ConsumerTest {
 
   @Test
   void processCommandShouldConsumeAddCommandSuccessfully() throws InterruptedException {
+    // given
     Producer producer = new Producer(queue, isRunning, commandCount);
-    User user = new User(1, "a1", "Robert");
-    producer.publishCommand(CommandType.ADD, user);
-
     Consumer consumer = new Consumer(queue, userRepository, isRunning, commandCount);
+    User user = new User(1, "a1", "Robert");
+
+    // when
+    producer.publishCommand(CommandType.ADD, user);
     consumer.processCommand(queue.take());
+    isRunning.set(false);
 
+    // then
     List<User> users = userRepository.getUsers();
-
     assertEquals(1, users.size());
     assertEquals(0, queue.size());
     assertEquals(0, commandCount.get());
@@ -46,18 +50,20 @@ class ConsumerTest {
 
   @Test
   void processCommandShouldConsumeDeleteCommandSuccessfully() throws InterruptedException {
+    // given
     Producer producer = new Producer(queue, isRunning, commandCount);
+    Consumer consumer = new Consumer(queue, userRepository, isRunning, commandCount);
     User user = new User(1, "a1", "Robert");
 
+    // when
     producer.publishCommand(CommandType.ADD, user);
     producer.publishCommand(CommandType.DELETE_ALL, null);
-
-    Consumer consumer = new Consumer(queue, userRepository, isRunning, commandCount);
     consumer.processCommand(queue.take());
     consumer.processCommand(queue.take());
+    isRunning.set(false);
 
+    // then
     List<User> users = userRepository.getUsers();
-
     assertEquals(0, users.size());
     assertEquals(0, queue.size());
     assertEquals(0, commandCount.get());

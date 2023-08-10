@@ -39,6 +39,5 @@ public class App {
       Thread.currentThread().interrupt();
       log.error(e.getMessage());
     }
-
   }
 }

@@ -11,6 +11,7 @@ public class User {
 
   @Id
   @Column(name = "USER_ID")
+  // pouzil by som generovanie IDcka  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long userId;
   @Column(name = "USER_GUID")
   private String userGuid;
@@ -22,11 +23,7 @@ public class User {
     this.userGuid = userGuid;
     this.userName = userName;
   }
-  public User(String userGuid, String userName) {
-    this.userGuid = userGuid;
-    this.userName = userName;
-  }
-  public User(){}
+  protected User(){}
 
   @Override
   public String toString() {

@@ -8,13 +8,10 @@ import org.juraj.durej.app.database.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Consumer implements Runnable {
+public class Consumer extends BlockingQueueProperty {
 
   private static final Logger log = LoggerFactory.getLogger(Consumer.class);
-  private BlockingQueue<Command> queue;
   private UserRepository userRepository;
-  private AtomicBoolean isRunning;
-  private AtomicInteger commandCount;
 
   public Consumer(BlockingQueue<Command> queue, UserRepository userRepository, AtomicBoolean isRunning,
       AtomicInteger commandCount) {

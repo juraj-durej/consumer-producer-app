@@ -9,11 +9,8 @@ import org.juraj.durej.app.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Producer implements Runnable {
+public class Producer extends BlockingQueueProperty {
   private static final Logger log = LoggerFactory.getLogger(Producer.class);
-  private BlockingQueue<Command> queue;
-  private AtomicBoolean isRunning;
-  private AtomicInteger commandCount;
 
   public Producer(BlockingQueue<Command> queue, AtomicBoolean isRunning, AtomicInteger commandCount) {
     this.queue = queue;
